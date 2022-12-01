@@ -1,0 +1,219 @@
+ <div class="alert alert-info" role="alert" style="font-size:1.2em">
+                  Perbaharui Status Pendidikan Anda
+                </div>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalTambah" role="button"><i class="fa fa-plus"></i> <span>Tambah Data Pendidikan</span></button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalTambah" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <form action="<?php echo base_url('dashboard/inputPendidikan') ?>" method="post">
+                      <div class="modal-header">
+                        <p class="modal-title" id="exampleModalLabel" style="font-size:1.2em;"><i class="fa fa-plus"></i> <span> Tambah Data Pendidikan</span></p>
+                      </div>
+                      <div class="modal-body">
+                        
+                          <div class="form-group">
+                              <label class="form-label">Instansi</label>
+                              <input name="instansi" placeholder="Nama Sekolah/Instansi" type="text" class="form-control" required>
+                          </div>
+                          <div class="form-group">
+                              <label class="form-label">Tahun Masuk</label>
+                              <select class="form-control" required="" name="tahun_masuk">
+                                <option value="" disabled selected>Pilih Tahun Masuk</option>
+                                <?php 
+                                  $date = date('Y');
+                                  $par = $date-50;
+                                  for($i=$date;$i>$par;$i--){
+                                  ?>
+                                  <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                  <?php
+                                  }
+                                ?>  
+                              </select>
+                          </div>
+                          <div class="form-group">
+                              <label class="form-label">Tahun Selesai</label>
+                              <select class="form-control" required="" name="tahun_keluar">
+                                <option value="" disabled selected>Pilih Tahun Selesai</option>
+                                <option value="1">Masih Dilaksanakan</option>
+                                <?php 
+                                  $date = date('Y');
+                                  $par = $date-50;
+                                  for($i=$date;$i>$par;$i--){
+                                  ?>
+                                  <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                  <?php
+                                  }
+                                ?>  
+                              </select>
+                          </div>
+                          <div class="form-group">
+                              <label class="form-label">Alamat</label>
+                              <textarea name="alamat_instansi" class="form-control" placeholder="Alamat Instansi/Sekolah" required></textarea>
+                          </div>
+                          <div class="form-group">
+                              <label class="form-label">Keterangan</label>
+                              <textarea name="keterangan" rows="3" class="form-control" placeholder="Keterangan"></textarea>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" name="submit" class="btn btn-primary">Save changes</button>
+                      </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <br><br>
+                <table id="example1" class="table table-bordered table-striped display nowrap">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Instansi</th>
+                        <th>Tahun Masuk</th>
+                        <th>Tahun Keluar</th>
+                        <th>Alamat</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php 
+                      $no = 1;
+                      foreach ($pendidikan->result() as $p) {
+                        //$id = $this->encryption->encrypt($p->id_pendidikan); 
+                        ?>
+                        <tr>
+                          <td><?php echo $no++ ?></td>
+                          <td><?php echo $p->instansi ?></td>
+                          <td><?php echo $p->tahun_masuk ?></td>
+                          <td><?php if($p->tahun_keluar == 1){echo "Masih Dilaksanakan";}else{echo $p->tahun_keluar;}?></td>
+                          <td><?php echo $p->alamat_instansi ?></td>
+                          <td>
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleKeterangan<?php echo $no?>" role="button"><i class="fa fa-eye"></i></button>
+                            <div class="modal fade" id="exampleKeterangan<?php echo $no?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" style="font-size:1.2em;">Keterangan</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><?php echo $p->keterangan ?></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                          </td>
+                          <td><button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal<?php echo $no?>" role="button"><i class="fa fa-pencil-square-o"></i></button> <a class="btn btn-danger btn-sm delete" href="<?php echo base_url('dashboard/hapusPendidikan/'.$p->id_pendidikan) ?>" role="button"><i class="fa fa-trash"></i></a></td>
+                        </tr>
+                        <div class="modal fade" id="exampleModal<?php echo $no?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <form action="<?php echo base_url('dashboard/editPendidikan/'.$p->id_pendidikan) ?>" method="post">
+                            <div class="modal-header">
+                              <p class="modal-title" id="exampleModalLabel" style="font-size:1.2em;"><i class="fa fa-pencil-square-o"></i> <span> Edit Data Pendidikan</span></p>
+                            </div>
+                            <div class="modal-body">
+                              
+                                <div class="form-group">
+                                    <label class="form-label">Instansi</label>
+                                    <input name="instansi" value="<?php echo $p->instansi ?>" type="text" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Tahun Masuk</label>
+                                    <select class="form-control" required="" name="tahun_masuk">
+                                      <option value="" disabled>Pilih Tahun Masuk</option>
+                                      <?php 
+                                        $date = date('Y');
+                                        $par = $date-50;
+                                        for($i=$date;$i>$par;$i--){
+                                          if($p->tahun_masuk == $i){
+                                            ?>
+                                            <option value="<?php echo $i ?>" selected><?php echo $i ?></option>
+                                            <?php
+                                          }
+                                          else{
+                                            ?>
+                                            <option value="<?php echo $i ?>">
+                                            <?php echo $i ?></option>
+                                            <?php    
+                                          }
+                                        }
+                                      ?>  
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Tahun Selesai</label>
+                                    <select class="form-control" required="" name="tahun_keluar">
+                                      <option value="" disabled>Pilih Tahun Selesai</option>
+                                      <?php 
+                                        $date = date('Y');
+                                        $par = $date-50;
+                                        for($i=$date;$i>$par;$i--){
+                                          if($i == $date){
+                                            if($i == $p->tahun_keluar){
+                                              ?>
+                                              <option value="1" selected>Masih Dilaksanakan</option>
+                                              <?php
+                                            }
+                                            else{
+                                              ?>
+                                              <option value="1">Masih Dilaksanakan</option>
+                                              <?php  
+                                            }
+                                          }
+                                          else{
+                                            if($i == $p->tahun_keluar){
+                                              ?>
+                                              <option value="<?php echo $i ?>" selected><?php echo $i ?></option>
+                                              <?php
+                                            }
+                                            else{
+                                              ?>
+                                              <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                              <?php  
+                                            }
+                                            ?>
+                                            
+                                            <?php    
+                                          }
+                                        }
+                                      ?>  
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Alamat</label>
+                                    <textarea name="alamat_instansi" class="form-control" required><?php echo $p->alamat_instansi ?></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Keterangan</label>
+                                    <textarea name="keterangan" rows="3" class="form-control" ><?php echo $p->keterangan ?></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <button type="submit" name="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                        <?php
+                      }
+                       ?>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th>No</th>
+                        <th>Instansi</th>
+                        <th>Tahun Masuk</th>
+                        <th>Tahun Keluar</th>
+                        <th>Alamat</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </tfoot>
+                  </table>
